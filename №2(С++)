@@ -1,1 +1,49 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
 
+using namespace std;
+
+// Функция для вычисления интерполяционного многочлена Лагранжа
+double lagrangeInterpolation(const vector<double>& xi, const vector<double>& yi, double x) {
+    double result = 0.0;
+    int n = xi.size();
+
+    for (int i = 0; i < n; ++i) {
+        double term = yi[i];
+        for (int j = 0; j < n; ++j) {
+            if (j != i) {
+                term *= (x - xi[j]) / (xi[i] - xi[j]);
+            }
+        }
+        result += term;
+    }
+
+    return result;
+}
+
+int main() {
+    // Заданные точки
+    vector<double> xi = {0.1 * M_PI, 0.2 * M_PI, 0.3 * M_PI, 0.4 * M_PI};
+    vector<double> yi(xi.size());
+
+    // Вычисление значений функции в заданных точках
+    for (int i = 0; i < xi.size(); ++i) {
+        yi[i] = sin(xi[i]);
+    }
+
+    // Точка для интерполяции
+    double x_star = 0.25 * M_PI;
+
+    // Интерполяция значения функции в точке x_star
+    double interpolated_value = lagrangeInterpolation(xi, yi, x_star);
+
+    // Вычисление погрешности интерполяции
+    double error = abs(sin(x_star) - interpolated_value);
+
+    // Вывод результатов
+    cout << "Интерполированное значение в точке x* = " << x_star << ": " << interpolated_value << endl;
+    cout << "Погрешность интерполяции: " << error << endl;
+
+    return 0;
+}
